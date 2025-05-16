@@ -13,8 +13,11 @@ export default function LoginScreen() {
                 />
             </View>
 
-            <View>
-                <Text></Text>
+            <View style={{
+                padding:25,
+                backgroundColor:'black'
+            }}>
+                <Text>Stay on Track, Stay Healthy</Text>
             </View>
         </View>
     )
