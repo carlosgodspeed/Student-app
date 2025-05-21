@@ -1,12 +1,18 @@
+import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 
 export default function RootLayout() {
-  return (
-    <Stack screenOptions={{
-      headerShown:false
-    }}>
-      <Stack.Screen name="(tabs)" />
-      <Stack.Screen name="login" />
-    </Stack>
-  )
+
+    useFonts({
+        'outfit':require('./../assets/fonts/Outfit-Regular.ttf'),
+        'outfit-bold':require('./../assets/fonts/Outfit-Bold.ttf'),
+        })
+
+    return(
+        <Stack screenOptions={{
+            headerShown:false
+        }}>
+
+        </Stack>
+    )
 }
