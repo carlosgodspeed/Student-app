@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { ActivityIndicator, Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Colors from '../../constant/Colors';
 
 export default function SignIn() {
@@ -16,7 +16,7 @@ export default function SignIn() {
             backgroundColor:Colors.WHITE,
         }}>
 
-        <Image source={require('./../../assets/images/Login.png')}style={{
+        <Image source={require('../../assets/images/login.png')}style={{
             width:180,
             height:180,
             }}/>
