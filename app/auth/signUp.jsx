@@ -1,7 +1,6 @@
-import { View, Text, Image, TextInput, StyleSheet, TouchableOpacity, Pressable } from 'react-native';
-import React from 'react';
-import Colors from './../../constant/Colors';
 import { useRouter } from 'expo-router';
+import { Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import Colors from './../../constant/Colors';
 
 export default function SignUp() {
 
@@ -85,6 +84,6 @@ const styles = StyleSheet.create({
         marginTop:20,
         borderRadius:8,
         fontFamily:'outfit-bold',
-        backgroundColor:'#313131',
+        backgroundColor:'#ffffff',
     }
 })

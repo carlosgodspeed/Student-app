@@ -2,7 +2,7 @@ import { useRouter } from "expo-router";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Colors from "../constant/Colors";
 
-export default function Index() {
+export default function Index() { 
 
     const router = useRouter();
 
