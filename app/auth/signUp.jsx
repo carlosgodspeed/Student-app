@@ -1,10 +1,35 @@
 import { useRouter } from 'expo-router';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { auth, db } from '../../config/firebaseConfig';
+import { setDoc, doc } from 'firebase/firestore';
 import Colors from './../../constant/Colors';
-
 export default function SignUp() {
 
     const router = useRouter();
+    const [fullName,setFullName] = useState(); 
+    const [email,setEmail] = useState();
+    const [password,setPassword] = useState();
+    const CreateNewAccount = () => {
+        createUserWithEmailAndPassword(auth,email,password)
+        .then(async(resp) => {
+            const user = resp.user;
+            console.log(user);
+            await SaveUser(user);
+        })
+        .catch(e => {
+            console.log(e.message)
+        })
+    }
+    const SaveUser = async(user) => {
+        await setDoc(doc(db,'users', email), {
+            name:fullName,
+            email:email,
+            member:false,
+            uid:user.uid
+        })
+    }
 
 
     return (
@@ -28,11 +53,23 @@ export default function SignUp() {
             fontFamily: 'outfit-bold',
         }}>Cadastre-se</Text>
 
-        <TextInput placeholder='Nome Completo' style={styles.textInput} />
-        <TextInput placeholder='Email' style={styles.textInput} />
-        <TextInput placeholder='Senha' secureTextEntry={true} style={styles.textInput} />
+        <TextInput placeholder='Nome Completo'
+        onChangeText={(value)=>setFullName(value)}
+        style={styles.textInput} 
+        />
+        <TextInput placeholder='Email'
+        onChangeText={(value)=>setEmail(value)}
+        style={styles.textInput} 
+        />
+        <TextInput placeholder='Senha'
+        onChangeText={(value)=>setPassword(value)}
+        secureTextEntry={true} 
+        style={styles.textInput} 
+        />
 
-        <TouchableOpacity style={{
+        <TouchableOpacity
+        onPress={CreateNewAccount} 
+        style={{
             padding:15,
             backgroundColor:Colors.PRIMARY,
             width:'100%',
