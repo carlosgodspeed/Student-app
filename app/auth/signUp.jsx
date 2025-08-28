@@ -1,9 +1,10 @@
 import { useRouter } from 'expo-router';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { useState } from 'react';
+import { doc, setDoc } from 'firebase/firestore';
+import { useContext, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { auth, db } from '../../config/firebaseConfig';
-import { setDoc, doc } from 'firebase/firestore';
+import { UserDetailContext } from '../../context/UserDetailContext';
 import Colors from './../../constant/Colors';
 export default function SignUp() {
 
@@ -11,6 +12,7 @@ export default function SignUp() {
     const [fullName,setFullName] = useState(); 
     const [email,setEmail] = useState();
     const [password,setPassword] = useState();
+    const {userDetail,setUserDetail} = useContext(UserDetailContext)
     const CreateNewAccount = () => {
         createUserWithEmailAndPassword(auth,email,password)
         .then(async(resp) => {
@@ -22,15 +24,16 @@ export default function SignUp() {
             console.log(e.message)
         })
     }
-    const SaveUser = async(user) => {
-        await setDoc(doc(db,'users', email), {
+    const SaveUser = async (user) => {
+        const data = {
             name:fullName,
-            email:email,
-            member:false,
-            uid:user.uid
-        })
+            email: email,
+            member: false,
+            uid: user.uid
+        }
+        await setDoc(doc(db,'users', email),data)
+        setUserDetail(data);
     }
-
 
     return (
         <View style={{
@@ -121,6 +124,7 @@ const styles = StyleSheet.create({
         marginTop:20,
         borderRadius:8,
         fontFamily:'outfit-bold',
-        backgroundColor:'#ffffff',
+        backgroundColor:'#333333',
+        color:'#fff',
     }
 })

@@ -1,10 +1,38 @@
 import { useRouter } from 'expo-router';
-import { Image, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { useContext, useState } from 'react';
+import { ActivityIndicator, Image, Pressable, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import { auth, db } from '../../config/firebaseConfig';
 import Colors from '../../constant/Colors';
-
+import { UserDetailContext } from '../../context/UserDetailContext';
 export default function SignIn() {
 
     const router = useRouter();
+    const [email,setEmail] = useState();
+    const [password,setPassword] = useState();
+    const {userDetail,setUserDetail} = useContext(UserDetailContext)
+    const [loading,setLoading] = useState(false);
+    const onSignInClick = () => {
+        setLoading(true)
+        signInWithEmailAndPassword(auth,email,password)
+        .then( async (resp) => {
+            const user = resp.user
+            console.log(user)
+            await getUserDetail();
+            setLoading(false);
+            router.replace('/(tabs)/home')
+        }).catch(e => {
+            console.log(e)
+            setLoading(false);
+            ToastAndroid.show('Senha e Email Incorretos', ToastAndroid.BOTTOM)
+        })
+    }
+    const getUserDetail = async () => {
+        const result = await getDoc(doc(db,'users',email));
+        console.log(result.data())
+        setUserDetail(result.data())
+    }
     
     return (
         <View style={{
@@ -27,14 +55,20 @@ export default function SignIn() {
         }}>Bem Vindo</Text>
 
         <TextInput placeholder='Email'
+        onChangeText={(value) => setEmail(value)}
             style={styles.textInput}
             />
 
-        <TextInput placeholder='Senha' 
+        <TextInput placeholder='Senha'
+        onChangeText={(value) => setPassword(value)}
+        secureTextEntry={true}
             style={styles.textInput}
             />
 
-        <TouchableOpacity style={{
+        <TouchableOpacity
+        onPress={onSignInClick}
+        disabled={loading}
+        style={{
             padding:15,
             backgroundColor:Colors.PRIMARY,
             width:'100%',
@@ -42,12 +76,14 @@ export default function SignIn() {
             borderRadius:10,
         }}>
 
-        <Text style={{
+        {!loading?<Text style={{
             fontFamily:'outfit',
             fontSize:20,
             color:Colors.WHITE,
             textAlign:'center',
-        }}>Login</Text>
+            }}>Login</Text>:
+            <ActivityIndicator size={'large'} />
+        }
 
         </TouchableOpacity>
 
@@ -84,6 +120,7 @@ const styles = StyleSheet.create({
         marginTop:20,
         borderRadius:8,
         fontFamily:'outfit-bold',
-        backgroundColor:'#ffffff',
+        backgroundColor:'#373737',
+        color:'#fff',
     }
 })
