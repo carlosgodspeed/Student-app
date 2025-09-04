@@ -10,15 +10,14 @@ export default function Button({ text, type = "fill", onPress, loading = false }
                 width: '100%',
                 borderRadius: 15,
                 marginTop: 15,
-                borderWidth: 1,
+                borderWidth: 2,
                 borderColor: Colors.PRIMARY,
                 backgroundColor: type === 'fill' ? Colors.PRIMARY : Colors.WHITE,
             }}
-            disabled={loading} // desativa o botão enquanto carrega
-        >
+            disabled={loading}>
             {loading ? (
                 <ActivityIndicator
-                    size="large"
+                    size={'large'}
                     color={type === 'fill' ? Colors.WHITE : Colors.PRIMARY}
                 />
             ) : (
