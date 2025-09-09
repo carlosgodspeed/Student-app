@@ -4,6 +4,7 @@
 - [Expo](https://expo.dev/)
 - JavaScript
 - Firebase
+- Gemini IA
 
 ---
 
