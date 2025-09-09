@@ -42,3 +42,10 @@ export const GenerateTopicsAIModel = model.startChat({
     },
   ],
 });
+
+export const GenerateCourseAIModel = model.startChat({
+  generationConfig,
+  history: [
+    
+  ],
+});

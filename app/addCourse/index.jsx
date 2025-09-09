@@ -1,15 +1,21 @@
-import { useState } from 'react';
-import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import { doc, setDoc } from 'firebase/firestore';
+import { useContext, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import Button from '../../components/Shared/Button';
-import { GenerateTopicsAIModel } from '../../config/AiModel';
+import { GenerateCourseAIModel, GenerateTopicsAIModel } from '../../config/AiModel';
+import { db } from '../../config/firebaseConfig';
 import Colors from '../../constant/Colors';
 import Prompt from '../../constant/Prompt';
+import { UserDetailContext } from '../../context/UserDetailContext';
 
 export default function AddCourse() {
     const [loading, setLoading] = useState(false);
+    const {userDetail, setUserDetail} = useContext(UserDetailContext)
     const [userInput, setUserInput] = useState();
     const [topics,setTopics] = useState([]);
     const [selectedTopics,setSelectedTopics] = useState([]);
+    const router = useRouter();
     const onGenerateTopic = async () => {
         setLoading(true);
         const PROMPT = userInput+Prompt.IDEA;
@@ -34,11 +40,31 @@ export default function AddCourse() {
         const selection = selectedTopics.find(item => item === topic);
         return selection?true:false
     }
-    const onGenerateCourse = () => {
-        
+    const onGenerateCourse = async () => {
+        setLoading(true)
+        const PROMPT = selectedTopics+Prompt.COURSE;
+    try{
+        const aiResp = await GenerateCourseAIModel.sendMessage(PROMPT);
+        const resp = JSON.parse(aiResp.response.text());
+        const courses = resp.courses;
+        console.log(courses);
+        courses?.forEach( async (course) => {
+            await setDoc(doc(db,'Courses', Date.now().toString()),{
+                ...course,
+                createdOn:new Date(),
+                createdByL:userDetail?.email,
+            })
+        })
+        router.push('/(tabs)/home')
+        setLoading(false);
+    }
+    catch (e) {
+        setLoading(false);        
+    }
+
     }
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <Text style={styles.title}>Criar Novo Curso</Text>
             <Text style={styles.subtitle}>O que você quer aprender hoje?</Text>
             <Text style={styles.description}>
@@ -91,7 +117,7 @@ export default function AddCourse() {
                 onPress={() => onGenerateCourse()}
                 loading={loading}
             />}
-        </View>
+        </ScrollView>
     );
 }
 
